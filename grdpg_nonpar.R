@@ -1,3 +1,8 @@
+if(!require(devtools)) {
+  install.packages(devtools)
+  library(devtools)
+}
+
 if(!require(nonparGraphTesting)) {
   devtools::install_github("nonparGraphTesting",username = "jagterberg")
   library(nonparGraphTesting)
