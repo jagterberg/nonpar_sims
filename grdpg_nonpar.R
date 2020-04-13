@@ -1,11 +1,13 @@
-if(!require(devtools)) {
-  install.packages("devtools")
-  library(devtools)
-}
+
+#if(!require(devtools)) {
+#  install.packages("devtools")
+#  library(devtools)
+#}
 
 if(!require(nonparGraphTesting)) {
-  devtools::install_github("nonparGraphTesting",username = "jagterberg")
+  install.packages("nonparGraphTesting_0.1.0.tar.gz", repos = NULL, type="source")
   library(nonparGraphTesting)
+  
 }
 if (!require(irlba)) {
   install.packages("irlba")
