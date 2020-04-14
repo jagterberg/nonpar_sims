@@ -88,7 +88,7 @@ for (eps in epsilons) {
       Yhat <- eigen(C)
       Yhat <- Yhat$vectors[,c(1,n-1,n)] %*% diag(abs(Yhat$values[c(1,n-1,n)])^(1/2))
       get_matched <- list()
-      #print("Matching datasets")
+      print("Matching datasets")
       for (l in c(1:length(signs))) {
         get_matched[[l]] <- match_support(Xhat,Yhat
                                           ,lambda_init = .2
