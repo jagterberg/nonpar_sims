@@ -57,7 +57,7 @@ Q6 <- diag(c(-1,1,-1),3)
 Q7 <- diag(c(1,1,-1),3)
 Q8 <- diag(c(1,-1,1),3)
 signs <- list(Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8)
-
+#n <- 100
 for (eps in epsilons) {
   vals[[i]] <- list()
   print(paste0("epsilon = ",eps))
@@ -83,10 +83,12 @@ for (eps in epsilons) {
       P2 <- Ytrue %*% Ipq %*% t(Ytrue)
       A <- generateAdjacencyMatrix(P1)
       C <- generateAdjacencyMatrix(P2)
-      Xhat <- eigen(A)
-      Xhat <- Xhat$vectors[,c(1,n-1,n)] %*% diag(abs(Xhat$values[c(1,n-1,n)])^(1/2))
-      Yhat <- eigen(C)
-      Yhat <- Yhat$vectors[,c(1,n-1,n)] %*% diag(abs(Yhat$values[c(1,n-1,n)])^(1/2))
+      Xhat <- irlba(A,3)
+      Xhat <- Xhat$u %*% diag(Xhat$d)^(1/2)
+      #Xhat <- Xhat$vectors[,c(1,n-1,n)] %*% diag(abs(Xhat$values[c(1,n-1,n)])^(1/2))
+      Yhat <- irlba(C,3)
+      Yhat <- Yhat$u %*% diag(Yhat$d)^(1/2)
+      #Yhat <- Yhat$vectors[,c(1,n-1,n)] %*% diag(abs(Yhat$values[c(1,n-1,n)])^(1/2))
       get_matched <- list()
       #print("Matching datasets")
       for (l in c(1:length(signs))) {
@@ -98,8 +100,8 @@ for (eps in epsilons) {
       
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
-      Ynew <- Yhat %*% Q
-      vals[[i]][[j]] <- nonpar.test(Xhat,Ynew,200)
+      Xnew <- Xhat %*% Q
+      vals[[i]][[j]] <- nonpar.test(Xnew,Yhat,200)
     }
     vals[[i]][[j]] <- vals[[i]][[j]]/MCs
     j <- j + 1
