@@ -74,6 +74,7 @@ for (eps in epsilons) {
     print(paste0("n = ",n))
     vals[[i]][[j]] <- 0
     for (mc in c(1:MCs)) {
+      print(paste0("Run: ",mc," out of ", MCs))#Matching datasets")
       m <- n
       assignmentvector1 <- rmultinom(n,1,pis)
       assignmentvector2 <- rmultinom(m,1,pis)
@@ -90,7 +91,7 @@ for (eps in epsilons) {
       Yhat <- Yhat$u %*% diag(Yhat$d)^(1/2)
       #Yhat <- Yhat$vectors[,c(1,n-1,n)] %*% diag(abs(Yhat$values[c(1,n-1,n)])^(1/2))
       get_matched <- list()
-      #print("Matching datasets")
+      
       for (l in c(1:length(signs))) {
         get_matched[[l]] <- match_support(Xhat,Yhat
                                           ,lambda_init = .2
