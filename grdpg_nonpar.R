@@ -43,7 +43,7 @@ Rcpp::cppFunction("
   }
 ")
 set.seed(1234)
-MCs <- 1000
+MCs <- 100
 epsilons <- c(.02,.05,.1)
 ns <- c(100,200,500,1000)
 vals <- list()
