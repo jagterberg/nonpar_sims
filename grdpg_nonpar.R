@@ -43,8 +43,8 @@ Rcpp::cppFunction("
   }
 ")
 set.seed(1234)
-MCs <- 100
-epsilons <- c(.02,.05,.1)
+MCs <- 50
+epsilons <- c(.01,.02,.05)#,.1)
 ns <- c(100,200,500,1000)
 vals <- list()
 i <- 1
@@ -102,9 +102,9 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]] <- nonpar.test(Xnew,Yhat,200)
+      vals[[i]][[j]] <- nonpar.test(Xnew,Yhat,200) + vals[[i]][[j]]
     }
-    vals[[i]][[j]] <- vals[[i]][[j]]/MCs
+    #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
     j <- j + 1
   }
   names(vals[[i]]) <- ns
@@ -116,7 +116,7 @@ names(vals) <- epsilons
 save(vals,file = "MC_results.Rdata")
 
   
-  
+#load("MC_results.Rdata")
   
   
   
