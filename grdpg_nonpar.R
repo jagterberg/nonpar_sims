@@ -44,7 +44,7 @@ Rcpp::cppFunction("
 ")
 set.seed(1234)
 MCs <- 50
-epsilons <- c(.01,.02,.05)#,.1)
+epsilons <- c(.1,.25,.3)
 ns <- c(100,200,500,1000)
 vals <- list()
 i <- 1
@@ -61,7 +61,7 @@ signs <- list(Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8)
 for (eps in epsilons) {
   vals[[i]] <- list()
   print(paste0("epsilon = ",eps))
-  B <- matrix(c(.3,.9,.9,.9,.3,.9,.9,.9,.3),3,3)
+  B <- matrix(c(.3,.8,.8,.8,.3,.8,.8,.8,.3),3,3)
   B2 <- B + diag(eps,3)
   nus <- eigen(B)
   nus_true1 <- nus$vectors %*% diag(abs(nus$values)^(1/2),3,3)
@@ -74,7 +74,7 @@ for (eps in epsilons) {
     print(paste0("n = ",n))
     vals[[i]][[j]] <- 0
     for (mc in c(1:MCs)) {
-      print(paste0("Run: ",mc," out of ", MCs))#Matching datasets")
+      print(paste0("Run: ",mc," out of ", MCs, " for n = ",n, ", eps = ",eps))#Matching datasets")
       m <- n
       assignmentvector1 <- rmultinom(n,1,pis)
       assignmentvector2 <- rmultinom(m,1,pis)
@@ -102,7 +102,7 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]] <- nonpar.test(Xnew,Yhat,200) + vals[[i]][[j]]
+      vals[[i]][[j]] <- 1 - nonpar.test(Xnew,Yhat,1000) + vals[[i]][[j]]
     }
     #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
     j <- j + 1
@@ -116,12 +116,35 @@ names(vals) <- epsilons
 save(vals,file = "MC_results.Rdata")
 
   
-#load("MC_results.Rdata")
+#load("MC_results.Rdata") 
   
+#vals
   
+#X <- Xnew
+#Y <- Yhat
+#dist.mat <- get_dist_matrix(X,Y)
+#U <- kernel.stat(X,Y,dist= dist.mat)
+#U
+#
+#nsims <- 1000
+#toReturn <- rep(-1.0,nsims)
+#Uhat <- rep(-100,nsims)
+#
+#  for (i in 1:nsims) {
+#    #cat(i," out of ",nsims,"\r")
+#    indices_1 <- sample(c(1:(nrow(X)*2)),size=nrow(X),replace = FALSE)
+#    indices_2 <- setdiff( c(1:(nrow(X)*2)), indices_1 )
+#    
+#    Uhat[i] <- kernel.stat(X=X,Y=Y,i1=indices_1,i2=indices_2,dist=dist.mat)
+#    if (Uhat[i] < U) {
+#      toReturn[i] <- 1.0
+#    } else {
+#      toReturn[i] <- 0.0
+#    }
+#  }
+#
+#  #return(sum(toReturn)/length(toReturn))
   
-  
-  
-  
+
   
   
