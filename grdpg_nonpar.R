@@ -44,7 +44,7 @@ Rcpp::cppFunction("
 ")
 set.seed(1234)
 MCs <- 50
-epsilons <- c(.1,.25,.3)
+epsilons <- c(.15,.2,.35)
 ns <- c(100,200,500,1000)
 vals <- list()
 i <- 1
@@ -116,7 +116,7 @@ names(vals) <- epsilons
 save(vals,file = "MC_results.Rdata")
 
   
-#load("MC_results.Rdata") 
+load("MC_results.Rdata") 
   
 #vals
   
