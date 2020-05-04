@@ -115,36 +115,20 @@ for (eps in epsilons) {
 names(vals) <- epsilons
 save(vals,file = "MC_results.Rdata")
 
-  
+#code to create table in paper  
 load("MC_results.Rdata") 
-  
-#vals
-  
-#X <- Xnew
-#Y <- Yhat
-#dist.mat <- get_dist_matrix(X,Y)
-#U <- kernel.stat(X,Y,dist= dist.mat)
-#U
-#
-#nsims <- 1000
-#toReturn <- rep(-1.0,nsims)
-#Uhat <- rep(-100,nsims)
-#
-#  for (i in 1:nsims) {
-#    #cat(i," out of ",nsims,"\r")
-#    indices_1 <- sample(c(1:(nrow(X)*2)),size=nrow(X),replace = FALSE)
-#    indices_2 <- setdiff( c(1:(nrow(X)*2)), indices_1 )
-#    
-#    Uhat[i] <- kernel.stat(X=X,Y=Y,i1=indices_1,i2=indices_2,dist=dist.mat)
-#    if (Uhat[i] < U) {
-#      toReturn[i] <- 1.0
-#    } else {
-#      toReturn[i] <- 0.0
-#    }
-#  }
-#
-#  #return(sum(toReturn)/length(toReturn))
-  
+vals2 <- vals
+load("5-2_GOOD_results/MC_results.Rdata") 
 
-  
-  
+results <- matrix(0,6,4)
+colnames(results) <- c(100,200,500,1000)
+rownames(results) <- c(.1,.15,.2,.25,.3,.35)
+results2 <- t(results)
+rm(results)
+results2[,"0.1"] <- sapply(vals$`0.1`,`[[`,1)
+results2[,"0.15"] <- sapply(vals2$`0.15`,`[[`,1)
+results2[,"0.2"] <- sapply(vals2$`0.2`,`[[`,1)
+results2[,"0.25"] <- sapply(vals$`0.25`,`[[`,1)
+results2[,"0.3"] <- sapply(vals$`0.3`,`[[`,1)
+results2[,"0.35"] <- sapply(vals2$`0.35`,`[[`,1)
+round(t(results2/50),3)
