@@ -116,9 +116,9 @@ names(vals) <- epsilons
 save(vals,file = "MC_results.Rdata")
 
 #code to create table in paper  
-load("MC_results.Rdata") 
+load("simulation_results/5-3_GOOD_results/MC_results.Rdata") 
 vals2 <- vals
-load("5-2_GOOD_results/MC_results.Rdata") 
+load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
 
 results <- matrix(0,6,4)
 colnames(results) <- c(100,200,500,1000)
