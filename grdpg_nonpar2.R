@@ -83,13 +83,13 @@ getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
 }
 
 
-load("data/dat.RData")
+load("data/TT-DSDS01216-glist114-raw-LCCTRUE.rda")
 
-A1s1 <- get.adjacency(g1s1)
-A2s2 <- get.adjacency(g1s2)
-A1s2 <- get.adjacency(g1s2)
-A2s1 <- get.adjacency(g2s1)
-rm(g1s1,g1s2,g2s2,g2s1)
+A1s1 <- get.adjacency(glist[[1]])
+A2s1 <- get.adjacency(glist[[2]])
+A1s2 <- get.adjacency(glist[[3]])
+A2s2 <- get.adjacency(glist[[4]])
+rm(glist)
 diag(A1s1) <- rowSums(A1s1) / (nrow(A1s1)-1)
 diag(A2s2) <- rowSums(A2s2) / (nrow(A2s2)-1)
 diag(A1s2) <- rowSums(A1s2) / (nrow(A1s2)-1)
