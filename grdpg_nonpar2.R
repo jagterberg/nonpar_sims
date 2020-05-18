@@ -146,7 +146,7 @@ results[[1]] <- pq
 print("testing A1s1 to A1s2")
 i <- 2
 out <- match_support(Xhat_A1s1, Xhat_A1s2,  numReps=50)
-pval <- nonpar.test(Xhat_A1s1  %*% out$Q ,Xhat_A1s2)
+pval <- nonpar.test(Xhat_A1s1 %*% out$Q ,Xhat_A1s2)
 results[[i]] <- pval
 names(results[[i]]) <- "A1s1 to A1s2"
 
