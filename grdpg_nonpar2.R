@@ -195,5 +195,5 @@ results[[i]] <- pval
 names(results[[i]]) <- "A2s1 to A2s2"
 save(results,file ="real_data_results.Rdata")
 
-
+load("real_data_results.Rdata")
 

@@ -42,10 +42,10 @@ Rcpp::cppFunction("
     return A;
   }
 ")
-set.seed(1234)
-MCs <- 50
-epsilons <- c(.15,.2,.35)
-ns <- c(100,200,500,1000)
+set.seed(1357)
+MCs <- 100
+epsilons <- c(0,.1,.2,.3,.4)
+ns <- c(100,200,300,400,500)#,1000)
 vals <- list()
 i <- 1
 Q1 <- diag(1,3)
@@ -72,7 +72,8 @@ for (eps in epsilons) {
   j <- 1
   for (n in ns) {
     print(paste0("n = ",n))
-    vals[[i]][[j]] <- 0
+    vals[[i]][[j]] <- rep(0,MCs)
+    k <- 1
     for (mc in c(1:MCs)) {
       print(paste0("Run: ",mc," out of ", MCs, " for n = ",n, ", eps = ",eps))#Matching datasets")
       m <- n
@@ -102,7 +103,8 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]] <-  nonpar.test(Xnew,Yhat,1000) + vals[[i]][[j]]
+      vals[[i]][[j]][k] <-  nonpar.test(Xnew,Yhat,1000)
+      k <- k+1
     }
     #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
     j <- j + 1
@@ -113,22 +115,22 @@ for (eps in epsilons) {
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results.Rdata")
+save(vals,file = "MC_results_power.Rdata")
 
 #code to create table in paper  
-load("simulation_results/5-3_GOOD_results/MC_results.Rdata") 
-vals2 <- vals
-load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
+#load("simulation_results/5-3_GOOD_results/MC_results.Rdata") 
+#vals2 <- vals
+#load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
 
-results <- matrix(0,6,4)
-colnames(results) <- c(100,200,500,1000)
-rownames(results) <- c(.1,.15,.2,.25,.3,.35)
-results2 <- t(results)
-rm(results)
-results2[,"0.1"] <- sapply(vals$`0.1`,`[[`,1)
-results2[,"0.15"] <- sapply(vals2$`0.15`,`[[`,1)
-results2[,"0.2"] <- sapply(vals2$`0.2`,`[[`,1)
-results2[,"0.25"] <- sapply(vals$`0.25`,`[[`,1)
-results2[,"0.3"] <- sapply(vals$`0.3`,`[[`,1)
-results2[,"0.35"] <- sapply(vals2$`0.35`,`[[`,1)
-round(t(results2/50),3)
+#results <- matrix(0,6,4)
+#colnames(results) <- c(100,200,500,1000)
+#rownames(results) <- c(.1,.15,.2,.25,.3,.35)
+#results2 <- t(results)
+#rm(results)
+#results2[,"0.1"] <- sapply(vals$`0.1`,`[[`,1)
+#results2[,"0.15"] <- sapply(vals2$`0.15`,`[[`,1)
+#results2[,"0.2"] <- sapply(vals2$`0.2`,`[[`,1)
+#results2[,"0.25"] <- sapply(vals$`0.25`,`[[`,1)
+#results2[,"0.3"] <- sapply(vals$`0.3`,`[[`,1)
+#results2[,"0.35"] <- sapply(vals2$`0.35`,`[[`,1)
+#round(t(results2/50),3)
