@@ -43,8 +43,8 @@ Rcpp::cppFunction("
   }
 ")
 set.seed(1357)
-MCs <- 100
-epsilons <- c(0,.1,.2,.3,.4)
+MCs <- 500
+epsilons <- c(0,.05,.1,.15,.2,.25,.3,.35,.4)
 ns <- c(100,200,300,400,500)#,1000)
 vals <- list()
 i <- 1
@@ -103,7 +103,7 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]][k] <-  nonpar.test(Xnew,Yhat,1000)
+      vals[[i]][[j]][k] <-  nonpar.test(Xnew,Yhat,100)
       k <- k+1
     }
     #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
@@ -115,10 +115,10 @@ for (eps in epsilons) {
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results_power.Rdata")
+save(vals,file = "MC_results_power_2.Rdata")
 
 #code to create table in paper  
-#load("simulation_results/5-3_GOOD_results/MC_results.Rdata") 
+#load("MC_results_power.Rdata") 
 #vals2 <- vals
 #load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
 
