@@ -118,19 +118,25 @@ names(vals) <- epsilons
 save(vals,file = "MC_results_power_2.Rdata")
 
 #code to create table in paper  
-#load("MC_results_power.Rdata") 
+load("MC_results_power_2.Rdata") 
 #vals2 <- vals
 #load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
 
-#results <- matrix(0,6,4)
-#colnames(results) <- c(100,200,500,1000)
-#rownames(results) <- c(.1,.15,.2,.25,.3,.35)
-#results2 <- t(results)
-#rm(results)
-#results2[,"0.1"] <- sapply(vals$`0.1`,`[[`,1)
-#results2[,"0.15"] <- sapply(vals2$`0.15`,`[[`,1)
-#results2[,"0.2"] <- sapply(vals2$`0.2`,`[[`,1)
-#results2[,"0.25"] <- sapply(vals$`0.25`,`[[`,1)
-#results2[,"0.3"] <- sapply(vals$`0.3`,`[[`,1)
-#results2[,"0.35"] <- sapply(vals2$`0.35`,`[[`,1)
-#round(t(results2/50),3)
+results <- matrix(0,9,5)
+colnames(results) <- c(100,200,300,400,500)
+rownames(results) <- names(vals)
+results2 <- t(results)
+rm(results)
+results2[,"0"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.05"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.1"] <- sapply(vals$`0.1`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.15"] <- sapply(vals$`0.15`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.2"] <- sapply(vals$`0.2`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.25"] <- sapply(vals$`0.25`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.3"] <- sapply(vals$`0.3`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.35"] <- sapply(vals$`0.35`,function(x){sum(ifelse(x < .1,1,0)) })
+results2[,"0.4"] <- sapply(vals$`0.4`,function(x){sum(ifelse(x < .1,1,0)) })
+
+
+t(results2)
+
