@@ -126,6 +126,9 @@ d2 <- getElbows(dA2s2$x,2)
 d3 <- getElbows(dA2s2$x,2)
 d4 <- getElbows(dA1s2$x,2)
 
+
+d <- max(d1,d2,d3,d4)
+
 A1s1_svd <- irlba(A1s1,d)
 A1s2_svd <- irlba(A1s2,d)
 A2s1_svd <- irlba(A2s1,d)
