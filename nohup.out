@@ -15,9 +15,5 @@ The following object is masked from ‘package:base’:
     union
 
 Loading required package: Rcpp
-[1] "testing A1s1 to A1s2"
-[1] "testing A1s1 to A2s1"
-[1] "testing A1s1 to A2s2"
-[1] "testing A1s2 to A2s1"
-[1] "testing A1s2 to A2s2"
-[1] "testing A2s1 to A2s2 (last one)"
+Error in irlba(A1s1, d) : object 'd' not found
+Execution halted
