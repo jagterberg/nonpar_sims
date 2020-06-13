@@ -83,20 +83,30 @@ getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
 }
 
 
-#load("data/TT-DSDS01216-glist114-raw-LCCTRUE.rda")
+#load("../data/TT-DSDS01216-glist114-raw-LCCTRUE.rda")
 #dat <- list(A1s1,A2s1,A1s2,A2s2)
-#save(dat,file = "data/dat.RData")
-load("data/dat.RData")
-A1s1 <- dat[[1]]
-A2s1 <- dat[[2]]
-A1s2 <- dat[[3]]
-A2s2 <- dat[[4]]
-rm(dat)
+#dat <- list(glist[[1]],glist[[2]],glist[[3]],glist[[4]])
+#A1s1 <- dat[[1]]
+#A1s2 <- dat[[2]]
+#A2s1 <- dat[[3]]
+#A2s2 <- dat[[4]]
+#A1s1 <- get.adjacency(A1s1)
+#A2s1 <- get.adjacency(A2s1)
+#A1s2 <- get.adjacency(A1s2)
+#A2s2 <- get.adjacency(A2s2)
+#rm(dat)
 #diag(A1s1) <- rowSums(A1s1) / (nrow(A1s1)-1)
 #diag(A2s2) <- rowSums(A2s2) / (nrow(A2s2)-1)
 #diag(A1s2) <- rowSums(A1s2) / (nrow(A1s2)-1)
 #diag(A2s1) <- rowSums(A2s1) / (nrow(A2s1)-1)
+#dat <- list(A1s1,A1s2,A2s1,A2s2)
+#save(dat,file = "../data/dat.RData")
 
+load("data/dat.RData")
+A1s1 <- dat[[1]]
+A1s2 <- dat[[2]]
+A2s1 <- dat[[3]]
+A2s2 <- dat[[4]]
 
 A1s1_eigen <- eigen(A1s1, symmetric = TRUE,only.values = TRUE)
 A2s2_eigen <- eigen(A2s2, symmetric = TRUE,only.values=TRUE)
@@ -115,19 +125,13 @@ d1 <- getElbows(dA1s1$x,2)
 d2 <- getElbows(dA2s2$x,2)
 d3 <- getElbows(dA2s2$x,2)
 d4 <- getElbows(dA1s2$x,2)
-d <- max(d1,d2,d3,d4)
+
 A1s1_svd <- irlba(A1s1,d)
 A1s2_svd <- irlba(A1s2,d)
 A2s1_svd <- irlba(A2s1,d)
 A2s2_svd <- irlba(A2s2,d)
-Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
-Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
-Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
-Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
 rm(A1s1,A1s2,A2s1,A2s2)
 
-phat <- sum(ifelse(A1s1_eigen$values[dA1s1$ix[c(1:d)]] > 0,1,0))
-qhat <- d - phat
 
 #df.q <- expand.grid(d1=c(-1,1), d2=c(-1,1), d3=c(-1,1), d4=c(-1,1))
 #QQ <- lapply(1:nrow(df.q), function(x) diag(df.q[x,]))
@@ -137,63 +141,106 @@ qhat <- d - phat
 #  out[[i]] <- match_support(X, Y, Q=QQ[[i]], numReps=50)
 #}
 #(costs = sapply(out, '[[', 3))
-pq <- c(phat,qhat)
-names(pq) <- c("phat","qhat")
+
 results <- list()
-results[[1]] <- pq
+#results[[1]] <- pq
 
 #A1s1 to A1s2
 print("testing A1s1 to A1s2")
-i <- 2
+d <- max(d1,d2)#,d3,d4)
+Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+
+phat <- sum(ifelse(A1s1_eigen$values[dA1s1$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
+i <- 1
 out <- match_support(Xhat_A1s1, Xhat_A1s2,  numReps=50)
 pval <- nonpar.test(Xhat_A1s1 %*% out$Q ,Xhat_A1s2)
-results[[i]] <- pval
-names(results[[i]]) <- "A1s1 to A1s2"
+results[[i]] <- list(pval, c(phat,qhat))
+names(results[[i]]) <- c("A1s1 to A1s2","phat,qhat")
 
 #A1s1 to A2s1
 print("testing A1s1 to A2s1")
-
 i <- i+1
+d <- max(d1,d3)#,d3,d4)
+Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+phat <- sum(ifelse(A1s1_eigen$values[dA1s1$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
+
 out <- match_support(Xhat_A1s1, Xhat_A2s1,  numReps=50)
 pval <- nonpar.test(Xhat_A1s1  %*% out$Q ,Xhat_A2s1)
-results[[i]] <- pval
-names(results[[i]]) <- "A1s1 to A2s1"
+results[[i]] <- list(pval,c(phat,qhat))
+names(results[[i]]) <- c("A1s1 to A2s1","phat,qhat")
 
 #A1s1 to A2s2
 print("testing A1s1 to A2s2")
 
 i <- i+1
+d <- max(d1,d4)#,d3,d4)
+Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+phat <- sum(ifelse(A1s1_eigen$values[dA1s1$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
 out <- match_support(Xhat_A1s1, Xhat_A2s2,  numReps=50)
 pval <- nonpar.test(Xhat_A1s1  %*% out$Q ,Xhat_A2s2)
-results[[i]] <- pval
-names(results[[i]]) <- "A1s1 to A2s2"
+results[[i]] <- list(pval,c(phat,qhat))
+names(results[[i]]) <- c("A1s1 to A2s2","phat,qhat")
 
 #A1s2 to A2s1
 print("testing A1s2 to A2s1")
 
 i <- i+1
+d <- max(d2,d3)#,d3,d4)
+#Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+phat <- sum(ifelse(A1s2_eigen$values[dA1s2$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
+
 out <- match_support(Xhat_A1s2, Xhat_A2s1,  numReps=50)
 pval <- nonpar.test(Xhat_A1s2  %*% out$Q ,Xhat_A2s1)
-results[[i]] <- pval
-names(results[[i]]) <- "A1s2 to A2s1"
+results[[i]] <- list(pval,c(phat,qhat))
+names(results[[i]]) <- c("A1s2 to A2s1","phat,qhat")
 
 #A1s2 to A2s2
 print("testing A1s2 to A2s2")
-
 i <- i+1
+d <- max(d2,d4)#,d3,d4)
+#Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+#Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+phat <- sum(ifelse(A1s2_eigen$values[dA1s2$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
 out <- match_support(Xhat_A1s2, Xhat_A2s2,  numReps=50)
 pval <- nonpar.test(Xhat_A1s2  %*% out$Q ,Xhat_A2s2)
-results[[i]] <- pval
-names(results[[i]]) <- "A1s2 to A2s2"
+results[[i]] <- list(pval,c(phat,qhat))
+names(results[[i]]) <- c("A1s2 to A2s2","phat,qhat")
 
 #A2s1 to A2s2
 print("testing A2s1 to A2s2 (last one)")
 i <- i+1
+d <- max(d3,d4)#,d3,d4)
+#Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
+#Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
+Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
+Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+phat <- sum(ifelse(A2s1_eigen$values[dA2s1$ix[c(1:d)]] > 0,1,0))
+qhat <- d - phat
 out <- match_support(Xhat_A2s1, Xhat_A2s2,  numReps=50)
 pval <- nonpar.test(Xhat_A2s1  %*% out$Q ,Xhat_A2s2)
-results[[i]] <- pval
-names(results[[i]]) <- "A2s1 to A2s2"
-save(results,file ="real_data_results.Rdata")
+results[[i]] <- list(pval,c(phat,qhat))
+names(results[[i]]) <- c("A2s1 to A2s2","phat,qhat")
 
-load("real_data_results.Rdata")
+save(results,file ="real_data_results_6-12.Rdata")
+
+#load("../real_data_results.Rdata")
 
