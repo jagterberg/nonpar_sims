@@ -1,0 +1,26 @@
+Loading required package: nonparGraphTesting
+Loading required package: irlba
+Loading required package: Matrix
+Loading required package: igraph
+Loading required package: methods
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+Loading required package: Rcpp
+[1] "testing A1s1 to A1s2"
+[1] "testing A1s1 to A2s1"
+[1] "testing A1s1 to A2s2"
+[1] "testing A1s2 to A2s1"
+[1] "testing A1s2 to A2s2"
+[1] "testing A2s1 to A2s2 (last one)"
+Error in ifelse(A2s1_eigen$values[dA2s1$ix[c(1:d)]] > 0, 1, 0) : 
+  object 'dA2s1' not found
+Execution halted
