@@ -117,7 +117,7 @@ A2s1_eigen <- eigen(A2s1, symmetric = TRUE,only.values = TRUE)
 
 dA1s1 <- sort(abs(A1s1_eigen$values),decreasing = TRUE,index.return=TRUE)
 dA2s2 <- sort(abs(A2s2_eigen$values),decreasing = TRUE,index.return=TRUE)
-dA2s2 <- sort(abs(A2s2_eigen$values),decreasing = TRUE,index.return=TRUE)
+dA2s1 <- sort(abs(A2s1_eigen$values),decreasing = TRUE,index.return=TRUE)
 dA1s2 <- sort(abs(A1s2_eigen$values),decreasing = TRUE,index.return=TRUE)
 
 
@@ -236,6 +236,7 @@ d <- max(d3,d4)#,d3,d4)
 #Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
 Xhat_A2s2 <- A2s2_svd$u[,c(1:d)] %*% diag(A2s2_svd$d[c(1:d)])^(1/2)
+
 phat <- sum(ifelse(A2s1_eigen$values[dA2s1$ix[c(1:d)]] > 0,1,0))
 qhat <- d - phat
 out <- match_support(Xhat_A2s1, Xhat_A2s2,  numReps=50)
