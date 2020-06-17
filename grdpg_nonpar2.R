@@ -81,15 +81,36 @@ getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
   
   return(q)
 }
+ptr <- function(g)
+{
+  if (class(g) != "igraph") {
+    if (!is.matrix(g)) stop("the input has to be either an igraph object or a matrix!")
+    else {
+      if (ncol(g)==2) g <- graph_from_edgelist(g)
+      else if (nrow(g)==ncol(g)) g <- graph_from_adjacency_matrix(g, weighted = TRUE)
+      else stop("the input matrix is not a graph format!")
+    }
+  }
+  
+  if (is.weighted(g)) {
+    W <- E(g)$weight
+  } else { # no-op!
+    W <- rep(1,ecount(g))
+  }
+  
+  E(g)$weight <- rank(W)*2 / (ecount(g)+1)
+  return(g)
+}
 
 
-#load("../data/TT-DSDS01216-glist114-raw-LCCTRUE.rda")
+#load("data/TT-DSDS01216-glist114-raw-LCCTRUE.rda")
 #dat <- list(A1s1,A2s1,A1s2,A2s2)
 #dat <- list(glist[[1]],glist[[2]],glist[[3]],glist[[4]])
-#A1s1 <- dat[[1]]
-#A1s2 <- dat[[2]]
-#A2s1 <- dat[[3]]
-#A2s2 <- dat[[4]]
+#A1s1 <- ptr(dat[[1]])
+#A1s2 <- ptr(dat[[2]])
+#A2s1 <- ptr(dat[[3]])
+#A2s2 <- ptr(dat[[4]])
+
 #A1s1 <- get.adjacency(A1s1)
 #A2s1 <- get.adjacency(A2s1)
 #A1s2 <- get.adjacency(A1s2)
@@ -100,13 +121,16 @@ getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
 #diag(A1s2) <- rowSums(A1s2) / (nrow(A1s2)-1)
 #diag(A2s1) <- rowSums(A2s1) / (nrow(A2s1)-1)
 #dat <- list(A1s1,A1s2,A2s1,A2s2)
-#save(dat,file = "../data/dat.RData")
+#save(dat,file = "data/dat.RData")
 
 load("data/dat.RData")
 A1s1 <- dat[[1]]
 A1s2 <- dat[[2]]
 A2s1 <- dat[[3]]
 A2s2 <- dat[[4]]
+
+
+
 
 A1s1_eigen <- eigen(A1s1, symmetric = TRUE,only.values = TRUE)
 A2s2_eigen <- eigen(A2s2, symmetric = TRUE,only.values=TRUE)
@@ -244,7 +268,7 @@ pval <- nonpar.test(Xhat_A2s1  %*% out$Q ,Xhat_A2s2)
 results[[i]] <- list(pval,c(phat,qhat))
 names(results[[i]]) <- c("A2s1 to A2s2","phat,qhat")
 
-save(results,file ="real_data_results_6-12.Rdata")
+save(results,file ="real_data_results_6-17.Rdata")
 
 #load("../real_data_results.Rdata")
 
