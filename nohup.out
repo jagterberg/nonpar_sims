@@ -21,6 +21,3 @@ Loading required package: Rcpp
 [1] "testing A1s2 to A2s1"
 [1] "testing A1s2 to A2s2"
 [1] "testing A2s1 to A2s2 (last one)"
-Error in ifelse(A2s1_eigen$values[dA2s1$ix[c(1:d)]] > 0, 1, 0) : 
-  object 'dA2s1' not found
-Execution halted
