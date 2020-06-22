@@ -145,10 +145,10 @@ dA2s1 <- sort(abs(A2s1_eigen$values),decreasing = TRUE,index.return=TRUE)
 dA1s2 <- sort(abs(A1s2_eigen$values),decreasing = TRUE,index.return=TRUE)
 
 
-d1 <- getElbows(dA1s1$x,2)
-d2 <- getElbows(dA2s2$x,2)
-d3 <- getElbows(dA2s2$x,2)
-d4 <- getElbows(dA1s2$x,2)
+d1 <- getElbows(dA1s1$x[c(1:100)],2)
+d2 <- getElbows(dA2s2$x[c(1:100)],2)
+d3 <- getElbows(dA2s2$x[c(1:100)],2)
+d4 <- getElbows(dA1s2$x[c(1:100)],2)
 
 
 d <- max(d1,d2,d3,d4)
@@ -174,7 +174,7 @@ results <- list()
 
 #A1s1 to A1s2
 print("testing A1s1 to A1s2")
-d <- max(d1,d2)#,d3,d4)
+d <- d1# max(d1,d2)#,d3,d4)
 Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 #Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -191,7 +191,7 @@ names(results[[i]]) <- c("A1s1 to A1s2","phat,qhat")
 #A1s1 to A2s1
 print("testing A1s1 to A2s1")
 i <- i+1
-d <- max(d1,d3)#,d3,d4)
+d <- d1#max(d1,d3)#,d3,d4)
 Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 #Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -208,7 +208,7 @@ names(results[[i]]) <- c("A1s1 to A2s1","phat,qhat")
 print("testing A1s1 to A2s2")
 
 i <- i+1
-d <- max(d1,d4)#,d3,d4)
+d <- d1#max(d1,d4)#,d3,d4)
 Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 #Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 #Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -224,7 +224,7 @@ names(results[[i]]) <- c("A1s1 to A2s2","phat,qhat")
 print("testing A1s2 to A2s1")
 
 i <- i+1
-d <- max(d2,d3)#,d3,d4)
+d <- d2#max(d2,d3)#,d3,d4)
 #Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -240,7 +240,7 @@ names(results[[i]]) <- c("A1s2 to A2s1","phat,qhat")
 #A1s2 to A2s2
 print("testing A1s2 to A2s2")
 i <- i+1
-d <- max(d2,d4)#,d3,d4)
+d <- d2#max(d2,d4)#,d3,d4)
 #Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 #Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -255,7 +255,7 @@ names(results[[i]]) <- c("A1s2 to A2s2","phat,qhat")
 #A2s1 to A2s2
 print("testing A2s1 to A2s2 (last one)")
 i <- i+1
-d <- max(d3,d4)#,d3,d4)
+d <- d3#max(d3,d4)#,d3,d4)
 #Xhat_A1s1 <- A1s1_svd$u[,c(1:d)] %*% diag(A1s1_svd$d[c(1:d)])^(1/2)
 #Xhat_A1s2 <- A1s2_svd$u[,c(1:d)] %*% diag(A1s2_svd$d[c(1:d)])^(1/2)
 Xhat_A2s1 <- A2s1_svd$u[,c(1:d)] %*% diag(A2s1_svd$d[c(1:d)])^(1/2)
@@ -268,7 +268,7 @@ pval <- nonpar.test(Xhat_A2s1  %*% out$Q ,Xhat_A2s2)
 results[[i]] <- list(pval,c(phat,qhat))
 names(results[[i]]) <- c("A2s1 to A2s2","phat,qhat")
 
-save(results,file ="real_data_results_6-17.Rdata")
+save(results,file ="real_data_results_6-22.Rdata")
 
 #load("../real_data_results.Rdata")
 
