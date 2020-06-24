@@ -43,8 +43,8 @@ Rcpp::cppFunction("
   }
 ")
 set.seed(1357)
-MCs <- 500
-epsilons <- c(0,.05,.1,.15,.2,.25,.3,.35,.4)
+MCs <- 100
+epsilons <- c(0,.05,.1,.15,.2,.25,.3,.35)#,.4)
 ns <- c(100,200,300,400,500)#,1000)
 vals <- list()
 i <- 1
@@ -115,69 +115,69 @@ for (eps in epsilons) {
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results_power_2.Rdata")
+save(vals,file = "MC_results_power_6-24.Rdata")
 
-#code to create table in paper  
-load("MC_results_power_2.Rdata") 
-#vals2 <- vals
-#load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
-
-results <- matrix(0,9,5)
-colnames(results) <- c(100,200,300,400,500)
-rownames(results) <- names(vals)
-results2 <- t(results)
-rm(results)
-results2[,"0"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.05"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.1"] <- sapply(vals$`0.1`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.15"] <- sapply(vals$`0.15`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.2"] <- sapply(vals$`0.2`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.25"] <- sapply(vals$`0.25`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.3"] <- sapply(vals$`0.3`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.35"] <- sapply(vals$`0.35`,function(x){sum(ifelse(x < .1,1,0)) })
-results2[,"0.4"] <- sapply(vals$`0.4`,function(x){sum(ifelse(x < .1,1,0)) })
-
-
-t(results2)
-#make power curve
-library(ggplot2)
-library(reshape2)
-
-gg_dat <- as.data.frame(t(results2/500))
-gg_dat$eps <- colnames(results2)
-gg_dat <- melt(gg_dat)
-gg_dat$n <- as.integer(as.character(gg_dat$variable))
-gg_dat$variable <- NULL
-g <- ggplot(data=gg_dat,aes(x = n, y = value)) 
-g+  theme_bw() +
-  theme(plot.title = element_text(size = 10,hjust = 0.5))+
-  ylab("Estimated Power") + 
-  ggtitle("Power Curve for Different Values of Epsilon") +
-  geom_line(aes(color = eps, group = eps),lwd=1,
-            position=position_jitter(w=0.02, h=.012)) +
-  geom_hline(yintercept = .05,linetype = "dashed")+
- # scale_x_continuous(limits = c(50,550)) +
-  scale_y_continuous(limits = c(-0.02,1.02),breaks= c(0.00,0.05,0.25,0.5,.75,1.00)) 
+#code to create table in paper
+# load("MC_results_power_2.Rdata")
+# vals2 <- vals
+# load("simulation_results/5-2_GOOD_results/MC_results.Rdata")
+# 
+# results <- matrix(0,9,5)
+# colnames(results) <- c(100,200,300,400,500)
+# rownames(results) <- names(vals)
+# results2 <- t(results)
+# rm(results)
+# results2[,"0"] <- sapply(vals$`0`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.05"] <- sapply(vals$`0`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.1"] <- sapply(vals$`0.1`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.15"] <- sapply(vals$`0.15`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.2"] <- sapply(vals$`0.2`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.25"] <- sapply(vals$`0.25`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.3"] <- sapply(vals$`0.3`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.35"] <- sapply(vals$`0.35`,function(x){sum(ifelse(x > .95,1,0)) })
+# results2[,"0.4"] <- sapply(vals$`0.4`,function(x){sum(ifelse(x > .95,1,0)) })
+# 
+# 
+# t(results2)
+# #make power curve
+# library(ggplot2)
+# library(reshape2)
+# 
+# gg_dat <- as.data.frame(t(results2/500))
+# gg_dat$eps <- colnames(results2)
+# gg_dat <- melt(gg_dat)
+# gg_dat$n <- as.integer(as.character(gg_dat$variable))
+# gg_dat$variable <- NULL
+# g <- ggplot(data=gg_dat,aes(x = n, y = value))
+# g+  theme_bw() +
+#   theme(plot.title = element_text(size = 10,hjust = 0.5))+
+# ylab("Estimated Power") + 
+# ggtitle("Power Curve for Different Values of Epsilon") +
+#   geom_line(aes(color = eps, group = eps),lwd=1,
+#             position=position_jitter(w=0.02, h=.012)) +
+#   geom_hline(yintercept = .05,linetype = "dashed")+
+#  # scale_x_continuous(limits = c(50,550)) +
+#   scale_y_continuous(limits = c(-0.02,1.02),breaks= c(0.00,0.05,0.25,0.5,.75,1.00)) 
   
 
 
-load("MC_results_power_2.Rdata") 
-#vals2 <- vals
-#load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
-
-results <- matrix(0,9,5)
-colnames(results) <- c(100,200,300,400,500)
-rownames(results) <- names(vals)
-results2 <- t(results)
-rm(results)
-results2[,"0"] <- sapply(vals$`0`,mean)
-results2[,"0.05"] <- sapply(vals$`0`,mean)
-results2[,"0.1"] <- sapply(vals$`0.1`,mean)
-results2[,"0.15"] <- sapply(vals$`0.15`,mean)
-results2[,"0.2"] <- sapply(vals$`0.2`,mean)
-results2[,"0.25"] <- sapply(vals$`0.25`,mean)
-results2[,"0.3"] <- sapply(vals$`0.3`,mean)
-results2[,"0.35"] <- sapply(vals$`0.35`,mean)
-results2[,"0.4"] <- sapply(vals$`0.4`,mean)
-results2
+# load("MC_results_power_2.Rdata") 
+# #vals2 <- vals
+# #load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
+# 
+# results <- matrix(0,9,5)
+# colnames(results) <- c(100,200,300,400,500)
+# rownames(results) <- names(vals)
+# results2 <- t(results)
+# rm(results)
+# results2[,"0"] <- sapply(vals$`0`,mean)
+# results2[,"0.05"] <- sapply(vals$`0`,mean)
+# results2[,"0.1"] <- sapply(vals$`0.1`,mean)
+# results2[,"0.15"] <- sapply(vals$`0.15`,mean)
+# results2[,"0.2"] <- sapply(vals$`0.2`,mean)
+# results2[,"0.25"] <- sapply(vals$`0.25`,mean)
+# results2[,"0.3"] <- sapply(vals$`0.3`,mean)
+# results2[,"0.35"] <- sapply(vals$`0.35`,mean)
+# results2[,"0.4"] <- sapply(vals$`0.4`,mean)
+# results2
 

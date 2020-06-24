@@ -18,7 +18,8 @@ if(!require(Rcpp)) {
 
 
 #youngser's code to get elbow
-getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
+getElbows <- function(dat, nFrom	Subject	Received	Size	Categories	
+Today's Announcements	Today's Announcements for June 24	1:06 AM	176 KB		 = 3, threshold = FALSE, plot = TRUE, main="") {
   ## Given a decreasingly sorted vector, return the given number of elbows
   ##
   ## Args:
