@@ -7,7 +7,7 @@
 if(!require(nonparGraphTesting)) {
   install.packages("nonparGraphTesting_0.1.0.tar.gz", repos = NULL, type="source")
   library(nonparGraphTesting)
-  
+
 }
 if (!require(irlba)) {
   install.packages("irlba")
@@ -30,7 +30,7 @@ if(!require(Rcpp)) {
 
 Rcpp::cppFunction("
   NumericMatrix generateAdjacencyMatrix(NumericMatrix pMatrix) {
-  
+
     int n = pMatrix.cols();
     NumericMatrix A(n,n);
     for(int i = 0; i < n; i ++) {
@@ -45,7 +45,7 @@ Rcpp::cppFunction("
 set.seed(1357)
 MCs <- 100
 epsilons <- c(0,.05,.1,.15,.2,.25,.3,.35)#,.4)
-ns <- c(100,200,300,400,500)#,1000)
+ns <- c(100,200,300,400)#,500)#,1000)
 vals <- list()
 i <- 1
 Q1 <- diag(1,3)
@@ -92,14 +92,14 @@ for (eps in epsilons) {
       Yhat <- Yhat$u %*% diag(Yhat$d)^(1/2)
       #Yhat <- Yhat$vectors[,c(1,n-1,n)] %*% diag(abs(Yhat$values[c(1,n-1,n)])^(1/2))
       get_matched <- list()
-      
+
       for (l in c(1:length(signs))) {
         get_matched[[l]] <- match_support(Xhat,Yhat
                                           ,lambda_init = .2
                                           ,alpha = .2
                                           , Q = signs[[l]],numReps = 50)
       }
-      
+
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
@@ -110,40 +110,49 @@ for (eps in epsilons) {
     j <- j + 1
   }
   names(vals[[i]]) <- ns
-  
+
   i <- i + 1
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results_power_6-24.Rdata")
+save(vals,file = "MC_results_power_7-2.Rdata")
 
 #code to create table in paper
-# load("MC_results_power_2.Rdata")
-# vals2 <- vals
-# load("simulation_results/5-2_GOOD_results/MC_results.Rdata")
-# 
-# results <- matrix(0,9,5)
-# colnames(results) <- c(100,200,300,400,500)
+#load("MC_results_power_2.Rdata")
+#vals2 <- vals
+#load("simulation_results/5-2_GOOD_results/MC_results.Rdata")
+
+# results <- matrix(0,8,4)
+# colnames(results) <- c(100,200,300,400)#,500)
 # rownames(results) <- names(vals)
 # results2 <- t(results)
 # rm(results)
-# results2[,"0"] <- sapply(vals$`0`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.05"] <- sapply(vals$`0`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.1"] <- sapply(vals$`0.1`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.15"] <- sapply(vals$`0.15`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.2"] <- sapply(vals$`0.2`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.25"] <- sapply(vals$`0.25`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.3"] <- sapply(vals$`0.3`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.35"] <- sapply(vals$`0.35`,function(x){sum(ifelse(x > .95,1,0)) })
-# results2[,"0.4"] <- sapply(vals$`0.4`,function(x){sum(ifelse(x > .95,1,0)) })
-# 
-# 
-# t(results2)
+# alpha <- .05
+# for (i in rownames(results)) {
+#   for (j in colnames(results)) {
+#     crit_val <- sapply(vals[[i]][[j]], function(x) {
+#       return(sort(x,ascending=TRUE)[alpha*length(x) + 1])
+#     } )
+#     results2[i,j] <- sum(crit_val
+#
+# }
+# results2[,"0"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.05"] <- sapply(vals$`0`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.1"] <- sapply(vals$`0.1`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.15"] <- sapply(vals$`0.15`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.2"] <- sapply(vals$`0.2`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.25"] <- sapply(vals$`0.25`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.3"] <- sapply(vals$`0.3`,function(x){sum(ifelse(x < .05,1,0)) })
+# results2[,"0.35"] <- sapply(vals$`0.35`,function(x){sum(ifelse(x < .05,1,0)) })
+# #results2[,"0.4"] <- sapply(vals$`0.4`,function(x){sum(ifelse(x > .95,1,0)) })
+#
+# #
+#  t(results2)
 # #make power curve
 # library(ggplot2)
 # library(reshape2)
-# 
-# gg_dat <- as.data.frame(t(results2/500))
+#
+# gg_dat <- as.data.frame(t(results2/100))
 # gg_dat$eps <- colnames(results2)
 # gg_dat <- melt(gg_dat)
 # gg_dat$n <- as.integer(as.character(gg_dat$variable))
@@ -151,21 +160,21 @@ save(vals,file = "MC_results_power_6-24.Rdata")
 # g <- ggplot(data=gg_dat,aes(x = n, y = value))
 # g+  theme_bw() +
 #   theme(plot.title = element_text(size = 10,hjust = 0.5))+
-# ylab("Estimated Power") + 
+# ylab("Estimated Power") +
 # ggtitle("Power Curve for Different Values of Epsilon") +
 #   geom_line(aes(color = eps, group = eps),lwd=1,
 #             position=position_jitter(w=0.02, h=.012)) +
 #   geom_hline(yintercept = .05,linetype = "dashed")+
 #  # scale_x_continuous(limits = c(50,550)) +
-#   scale_y_continuous(limits = c(-0.02,1.02),breaks= c(0.00,0.05,0.25,0.5,.75,1.00)) 
-  
-
-
-# load("MC_results_power_2.Rdata") 
-# #vals2 <- vals
-# #load("simulation_results/5-2_GOOD_results/MC_results.Rdata") 
-# 
-# results <- matrix(0,9,5)
+#   scale_y_continuous(limits = c(-0.02,1.02),breaks= c(0.00,0.05,0.25,0.5,.75,1.00))
+#
+#
+#
+# # load("MC_results_power_2.Rdata")
+# # #vals2 <- vals
+# # #load("simulation_results/5-2_GOOD_results/MC_results.Rdata")
+# #
+# results <- matrix(0,8,5)
 # colnames(results) <- c(100,200,300,400,500)
 # rownames(results) <- names(vals)
 # results2 <- t(results)
@@ -180,4 +189,4 @@ save(vals,file = "MC_results_power_6-24.Rdata")
 # results2[,"0.35"] <- sapply(vals$`0.35`,mean)
 # results2[,"0.4"] <- sapply(vals$`0.4`,mean)
 # results2
-
+#

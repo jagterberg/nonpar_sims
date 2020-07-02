@@ -1,7 +1,7 @@
 if(!require(nonparGraphTesting)) {
   install.packages("nonparGraphTesting_0.1.0.tar.gz", repos = NULL, type="source")
   library(nonparGraphTesting)
-  
+
 }
 if (!require(irlba)) {
   install.packages("irlba")
@@ -18,8 +18,7 @@ if(!require(Rcpp)) {
 
 
 #youngser's code to get elbow
-getElbows <- function(dat, nFrom	Subject	Received	Size	Categories	
-Today's Announcements	Today's Announcements for June 24	1:06 AM	176 KB		 = 3, threshold = FALSE, plot = TRUE, main="") {
+getElbows <- function(dat, n = 3, threshold = FALSE, plot = TRUE, main="") {
   ## Given a decreasingly sorted vector, return the given number of elbows
   ##
   ## Args:
@@ -35,25 +34,25 @@ Today's Announcements	Today's Announcements for June 24	1:06 AM	176 KB		 = 3, th
   ## Reference:
   ##   Zhu, Mu and Ghodsi, Ali (2006), "Automatic dimensionality selection from
   ##   the scree plot via the use of profile likelihood", Computational
-  ##   Statistics & Data Analysis, Volume 51 Issue 2, pp 918-930, November, 2006. 
-  
+  ##   Statistics & Data Analysis, Volume 51 Issue 2, pp 918-930, November, 2006.
+
   #  if (is.unsorted(-d))
-  
-  
+
+
   if (is.matrix(dat)) {
     d <- sort(apply(dat,2,sd), decreasing=TRUE)
   } else {
     d <- sort(dat,decreasing=TRUE)
   }
-  
+
   if (!is.logical(threshold))
     d <- d[d > threshold]
-  
+
   p <- length(d)
   if (p == 0)
     stop(paste("d must have elements that are larger than the threshold ",
                threshold), "!", sep="")
-  
+
   lq <- rep(0.0, p)                     # log likelihood, function of q
   for (q in 1:p) {
     mu1 <- mean(d[1:q])
@@ -63,12 +62,12 @@ Today's Announcements	Today's Announcements for June 24	1:06 AM	176 KB		 = 3, th
     lq[q] <- sum( dnorm(  d[1:q ], mu1, sqrt(sigma2), log=TRUE) ) +
       sum( dnorm(d[-(1:q)], mu2, sqrt(sigma2), log=TRUE) )
   }
-  
+
   q <- which.max(lq)
   if (n > 1 && q < (p-1)) {
     q <- c(q, q + getElbows(d[(q+1):p], n-1, plot=FALSE))
   }
-  
+
   if (plot==TRUE) {
     if (is.matrix(dat)) {
       sdv <- d # apply(dat,2,sd)
@@ -79,7 +78,7 @@ Today's Announcements	Today's Announcements for June 24	1:06 AM	176 KB		 = 3, th
       points(q,dat[q],col=2,pch=19)
     }
   }
-  
+
   return(q)
 }
 ptr <- function(g)
@@ -92,13 +91,13 @@ ptr <- function(g)
       else stop("the input matrix is not a graph format!")
     }
   }
-  
+
   if (is.weighted(g)) {
     W <- E(g)$weight
   } else { # no-op!
     W <- rep(1,ecount(g))
   }
-  
+
   E(g)$weight <- rank(W)*2 / (ecount(g)+1)
   return(g)
 }
