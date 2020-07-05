@@ -44,7 +44,7 @@ Rcpp::cppFunction("
 ")
 set.seed(1357)
 MCs <- 100
-epsilons <- c(0,.05,.1,.15,.2,.25,.3,.35)#,.4)
+epsilons <- c(0,.1,.2,.3,.4)
 ns <- c(100,200,300,400)#,500)#,1000)
 vals <- list()
 i <- 1
@@ -72,7 +72,7 @@ for (eps in epsilons) {
   j <- 1
   for (n in ns) {
     print(paste0("n = ",n))
-    vals[[i]][[j]] <- rep(0,MCs)
+    vals[[i]][[j]] <- list() #rep(0,MCs)
     k <- 1
     for (mc in c(1:MCs)) {
       print(paste0("Run: ",mc," out of ", MCs, " for n = ",n, ", eps = ",eps))#Matching datasets")
@@ -103,7 +103,7 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]][k] <-  nonpar.test(Xnew,Yhat,100)
+      vals[[i]][[j]][[k]] <-  nonpar.test(Xnew,Yhat,100,p.val = FALSE)
       k <- k+1
     }
     #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
@@ -115,7 +115,7 @@ for (eps in epsilons) {
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results_power_7-2.Rdata")
+save(vals,file = "MC_results_power_7-5.Rdata")
 
 #code to create table in paper
 #load("MC_results_power_2.Rdata")
