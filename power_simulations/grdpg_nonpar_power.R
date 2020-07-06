@@ -103,7 +103,7 @@ for (eps in epsilons) {
       cs <- sapply(get_matched,`[[`,3)
       Q <-  get_matched[[which.min(cs)]]$Q
       Xnew <- Xhat %*% Q
-      vals[[i]][[j]][[k]] <-  nonpar.test(Xnew,Yhat,100,p.val = FALSE)
+      vals[[i]][[j]][[k]] <-  nonpar.test(Xnew,Yhat,500,p.val = FALSE)
       k <- k+1
     }
     #vals[[i]][[j]] <- vals[[i]][[j]]#/MCs
@@ -115,7 +115,7 @@ for (eps in epsilons) {
 }
 
 names(vals) <- epsilons
-save(vals,file = "MC_results_power_7-5.Rdata")
+save(vals,file = "MC_results_power_7-6.Rdata")
 
 #code to create table in paper
 #load("MC_results_power_2.Rdata")
