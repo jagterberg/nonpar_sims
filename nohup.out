@@ -41,6 +41,10 @@ The following object is masked from ‘package:base’:
 
 Loading required package: Rcpp
 [1] "packages loaded, running dcSBM simulation on 3 cores."
-Error in { : task 1 failed - "unused argument (eps = eps)"
+[1] "beginning simulation for n = 300"
+[1] "beginning simulation for n = 700"
+[1] "i = 1 out of 100"
+[1] "i = 1 out of 100"
+Error in { : task 1 failed - "object 'minval1' not found"
 Calls: %dopar% -> <Anonymous>
 Execution halted
