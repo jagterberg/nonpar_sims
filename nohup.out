@@ -1,0 +1,46 @@
+Loading required package: foreach
+Loading required package: parallel
+Loading required package: doParallel
+Loading required package: iterators
+Installing package into ‘/cis/home/jagterb1/R/x86_64-pc-linux-gnu-library/3.4’
+(as ‘lib’ is unspecified)
+* installing *source* package ‘nonparGraphTesting’ ...
+** R
+** inst
+** preparing package for lazy loading
+Warning: replacing previous import ‘Matrix::cov2cor’ by ‘stats::cov2cor’ when loading ‘nonparGraphTesting’
+Warning: replacing previous import ‘Matrix::toeplitz’ by ‘stats::toeplitz’ when loading ‘nonparGraphTesting’
+Warning: replacing previous import ‘Matrix::update’ by ‘stats::update’ when loading ‘nonparGraphTesting’
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded
+Warning: replacing previous import ‘Matrix::cov2cor’ by ‘stats::cov2cor’ when loading ‘nonparGraphTesting’
+Warning: replacing previous import ‘Matrix::toeplitz’ by ‘stats::toeplitz’ when loading ‘nonparGraphTesting’
+Warning: replacing previous import ‘Matrix::update’ by ‘stats::update’ when loading ‘nonparGraphTesting’
+* DONE (nonparGraphTesting)
+Warning messages:
+1: replacing previous import ‘Matrix::cov2cor’ by ‘stats::cov2cor’ when loading ‘nonparGraphTesting’ 
+2: replacing previous import ‘Matrix::toeplitz’ by ‘stats::toeplitz’ when loading ‘nonparGraphTesting’ 
+3: replacing previous import ‘Matrix::update’ by ‘stats::update’ when loading ‘nonparGraphTesting’ 
+Loading required package: irlba
+Loading required package: Matrix
+Loading required package: igraph
+Loading required package: methods
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+Loading required package: Rcpp
+[1] "packages loaded, running dcSBM simulation on 3 cores."
+Error in { : task 1 failed - "unused argument (eps = eps)"
+Calls: %dopar% -> <Anonymous>
+Execution halted
