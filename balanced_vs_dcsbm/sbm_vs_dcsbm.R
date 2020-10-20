@@ -17,6 +17,7 @@ Rcpp::cppFunction("
 
 # Simulate two SBMs and test
 run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
+  print(paste("beginning simulation for n =",n))
   alpha <- .05
   results <- list()
   set.seed(seed) #1111 and #1112 is okay
@@ -132,6 +133,7 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
   }
   mainvals <- paste0("n = ",n,", eps = ",eps)
   toReturn <-list(mainvals,results)
+  print(paste("finished simulation for n =",n))
   return(toReturn)
   
 }

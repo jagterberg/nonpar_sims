@@ -89,7 +89,7 @@ results_dcsbm <- foreach(n=ns,.packages=c('nonparGraphTesting','irlba','igraph',
            ,.noexport = "generateAdjacencyMatrix" )  %dopar% {
              source("./balanced_sbm/sbm_hyp_test.R")
              #print(paste("eps = ",eps,", n = ",n))
-             run_simulation_dcsbm(eps = eps,ntimes = 100,n=n,nMC = 500)
+             run_simulation_dcsbm(ntimes = 100,n=n,nMC = 500)
     }
 save(results_dcsbm,file = "dcsbm_results_10-19.Rdata") 
  
