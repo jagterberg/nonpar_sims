@@ -106,6 +106,9 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
                                                  ,eps = .01,eps_OT = .01
                                                  ,p=1,q=2)
     
+    
+    minval1 <- cs1[which.min(cs1)]
+    minval2 <- cs2[which.min(cs2)]
     minval3 <- kernel.stat(Xhat%*% get_matched_3$Q,Yhat)
     
     
@@ -113,7 +116,7 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
       final_Q <- get_matched_1[[which.min(cs1)]]$Q
       
       
-    } else if ( minval3 < minval1){
+    } else if ( minval3 < minval2){
       final_Q <- get_matched_3$Q#[[which.min(cs1)]]$Q
     } else {
       final_Q <- get_matched_2[[which.min(cs2)]]$Q

@@ -82,12 +82,12 @@ print(paste0("packages loaded, running dcSBM simulation on ",3," cores."))
 
 #print("finished SBM simulations.")#, starting DCSBM simulations")
 
-source("./balanced_vs_dcsbm/sbm_vs_dcsbm.R")
+#source("./balanced_vs_dcsbm/sbm_vs_dcsbm.R")
 # j <- 1
 
 results_dcsbm <- foreach(n=ns,.packages=c('nonparGraphTesting','irlba','igraph','Rcpp','Matrix')
            ,.noexport = "generateAdjacencyMatrix" )  %dopar% {
-             source("./balanced_sbm/sbm_hyp_test.R")
+             source("./balanced_vs_dcsbm/sbm_vs_dcsbm.R")
              #print(paste("eps = ",eps,", n = ",n))
              run_simulation_dcsbm(ntimes = 100,n=n,nMC = 500)
     }
