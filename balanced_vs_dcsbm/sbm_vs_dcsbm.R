@@ -134,7 +134,7 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
     results[[i]]$critical_value <- sort(results[[i]]$permutation_results)[floor((1-alpha)*length(results[[i]]$permutation_results))]
     results[[i]]$`estimated p-value` <- sum(results[[i]]$permutation_results > results[[i]]$`test statistic`)/length(results[[i]]$permutation_results)
   }
-  mainvals <- paste0("n = ",n,", eps = ",eps)
+  mainvals <- paste0("n = ",n)
   toReturn <-list(mainvals,results)
   print(paste("finished simulation for n =",n))
   return(toReturn)
