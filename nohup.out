@@ -63,6 +63,3 @@ Loading required package: Rcpp
 [21] "packages loaded, running dcSBM simulation: list(con = 23, host = \"localhost\", rank = 21)"
 [22] "packages loaded, running dcSBM simulation: list(con = 24, host = \"localhost\", rank = 22)"
 [23] "packages loaded, running dcSBM simulation: list(con = 25, host = \"localhost\", rank = 23)"
-Error in { : task 1 failed - "object 'eps' not found"
-Calls: %dopar% -> <Anonymous>
-Execution halted
