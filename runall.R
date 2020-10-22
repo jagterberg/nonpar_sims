@@ -33,9 +33,9 @@ cores=detectCores()
 cl <- makeCluster(cores[1]-1) #not to overload your computer
 registerDoParallel(cl)
 
-epsilons <- c(0,.1,.2)
-ns <- c(300,500,700)#600,900)
-print(paste0("packages loaded, running dcSBM simulation: ",cl))
+#epsilons <- c(0,.1,.2)
+ns <- c(100,200,300,400,500)#,700)#600,900)
+print(paste0("packages loaded, running dcSBM simulation"))#,cl))
 
 
 # results_sbm <- list()
@@ -91,9 +91,9 @@ results_dcsbm <- foreach(n=ns,.packages=c('nonparGraphTesting','irlba','igraph',
            ,.noexport = "generateAdjacencyMatrix" )  %dopar% {
              source("./balanced_vs_dcsbm/sbm_vs_dcsbm.R")
              #print(paste("eps = ",eps,", n = ",n))
-             run_simulation_dcsbm(ntimes = 100,n=n,nMC = 500)
+             run_simulation_dcsbm(ntimes = 500,n=n,nMC = 500)
     }
-save(results_dcsbm,file = "dcsbm_results_10-19.Rdata") 
+save(results_dcsbm,file = "dcsbm_results_10-22.Rdata") 
 stopCluster(cl)
  
 # for (n in ns) {
