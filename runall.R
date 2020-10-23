@@ -93,7 +93,7 @@ results_dcsbm <- foreach(n=ns,.packages=c('nonparGraphTesting','irlba','igraph',
              #print(paste("eps = ",eps,", n = ",n))
              run_simulation_dcsbm(ntimes = 500,n=n,nMC = 500)
     }
-save(results_dcsbm,file = "dcsbm_results_10-22.Rdata") 
+save(results_dcsbm,file = "dcsbm_results_10-23.Rdata") 
 stopCluster(cl)
  
 # for (n in ns) {
