@@ -16,7 +16,7 @@ Rcpp::cppFunction("
 
 
 # Simulate two SBMs and test
-run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
+run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1357,nMC=500) {
   print(paste("beginning simulation for n =",n))
   alpha <- .05
   results <- list()
@@ -40,9 +40,9 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=1234,nMC=500) {
     print(paste0("i = ",i," out of ",ntimes))
     assignmentvector1 <- rmultinom(n,1,pis)
     assignmentvector2 <- rmultinom(m,1,pis)
-    betas <- rbeta(n,3,1)
+    betas <- .5 * rbeta(n,3,2) + .5
     Xtrue <-t(assignmentvector1) %*% nus_true
-    Ytrue <- betas <- rbeta(n,1,1)* t(assignmentvector2) %*% nus_true
+    Ytrue <- betas * t(assignmentvector2) %*% nus_true
     P1 <- Xtrue %*%Ipq %*% t(Xtrue)
     P2 <- Ytrue %*% Ipq %*% t(Ytrue)
     A <- generateAdjacencyMatrix(P1)
