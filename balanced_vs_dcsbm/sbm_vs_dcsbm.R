@@ -16,7 +16,7 @@ Rcpp::cppFunction("
 
 
 # Simulate two SBMs and test
-run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500) {
+run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =c(.2,.8,1,1)) {
   print(paste("beginning simulation for n =",n))
   alpha <- .05
   results <- list()
@@ -40,7 +40,7 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500) {
     print(paste0("i = ",i," out of ",ntimes))
     assignmentvector1 <- rmultinom(n,1,pis)
     assignmentvector2 <- rmultinom(m,1,pis)
-    betas <- .2 * rbeta(n,1,1) + .8
+    betas <- betaparams[1] * rbeta(n,betaparams[3],betaparams[4]) + betaparams[2]
     Xtrue <-t(assignmentvector1) %*% nus_true
     Ytrue <- betas * t(assignmentvector2) %*% nus_true
     P1 <- Xtrue %*%Ipq %*% t(Xtrue)
@@ -58,28 +58,43 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500) {
     #find the alignment
     cs1 <- rep(0,length(signs))
     cs2 <- rep(0,length(signs))
+    cs3 <- rep(0,length(signs))
     get_matched_1 <- list()
     get_matched_2 <- list()
+    gm <- list()
     for (l in c(1:(length(signs)))) {
       get_matched_1[[l]] <- iterative_optimal_transport(Xhat,Yhat
                                                         #,lambda_init = .5
                                                         #,alpha = .5
                                                         #,lambda_final = .27
-                                                        , Q = bdiag(1,signs[[l]]),numReps = 10
+                                                        , Q = bdiag(1,signs[[l]]),numReps = 100
                                                         ,p=1,q=2)
-      cs1[l] <- get_matched_1[[l]]$obj.value
+      #cs1[l] <- get_matched_1[[l]]$obj.value
       cs1[l] <- kernel.stat(Xhat%*% get_matched_1[[l]]$Q,Yhat)
       
       get_matched_2[[l]] <- iterative_optimal_transport(Xhat,Yhat
                                                         # ,lambda_init = .5
                                                         #,alpha = .5
                                                         # ,lambda_final = .27
-                                                        , Q = bdiag(-1,signs[[l]]),numReps = 10
+                                                        , Q = bdiag(-1,signs[[l]]),numReps = 100
                                                         ,p=1,q=2)
-      cs2[l] <- get_matched_2[[l]]$obj.value
+      #cs2[l] <- get_matched_2[[l]]$obj.value
       cs2[l] <- kernel.stat(Xhat%*% get_matched_2[[l]]$Q,Yhat)
+      gm[[l]] <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.01
+                                             # ,lambda_init = .5
+                                             #,alpha = .5
+                                             # ,lambda_final = .27
+                                             , Q = bdiag(-1,signs[[l]]),numReps = 100
+                                             ,p=1,q=2)
+      cs3[l] <- kernel.stat(Xtilde%*% gm[[l]]$Q,Ytilde)
+      
     }
     
+    minval1 <- cs1[which.min(cs1)]
+    minval2 <- cs2[which.min(cs2)]
+    
+    
+    #get_q_init <- cs3[which.min(cs3)]
     W1 <- procrustes(Xhat,Xtilde,Pi = diag(1,n),p=1,q=2)
     W2 <- procrustes(Yhat,Ytilde,Pi = diag(1,n),p=1,q=2)
     
@@ -87,8 +102,8 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500) {
                                       # ,lambda_init = .5
                                       #,alpha = .5
                                       # ,lambda_final = .27
-                                      
-                                      ,numReps =  50
+                                      ,Q = gm[[which.min(cs3)]]$Q
+                                      ,numReps =  100
                                       ,eps = .01,eps_OT = .01
                                       ,p=1,q=2)
     
@@ -102,15 +117,11 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500) {
                                                  #,alpha = .5
                                                  # ,lambda_final = .27
                                                  , Q = Q_init
-                                                 ,numReps =  50
+                                                 ,numReps =  100
                                                  ,eps = .01,eps_OT = .01
                                                  ,p=1,q=2)
     
-    
-    minval1 <- cs1[which.min(cs1)]
-    minval2 <- cs2[which.min(cs2)]
     minval3 <- kernel.stat(Xhat%*% get_matched_3$Q,Yhat)
-    
     
     if( minval1 < minval2 & minval1 < minval3) { 
       final_Q <- get_matched_1[[which.min(cs1)]]$Q
