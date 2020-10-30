@@ -40,9 +40,9 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =
     print(paste0("i = ",i," out of ",ntimes))
     assignmentvector1 <- rmultinom(n,1,pis)
     assignmentvector2 <- rmultinom(m,1,pis)
-    betas <- betaparams[1] * rbeta(n,betaparams[3],betaparams[4]) + betaparams[2]
-    Xtrue <-t(assignmentvector1) %*% nus_true
-    Ytrue <- betas * t(assignmentvector2) %*% nus_true
+    betas <- betaparams[1]*rbeta(n,betaparams[3],betaparams[4]) + betaparams[2]
+    Xtrue <-t(assignmentvector1) %*% nus_true1
+    Ytrue <-  betas* t(assignmentvector2) %*% nus_true2
     P1 <- Xtrue %*%Ipq %*% t(Xtrue)
     P2 <- Ytrue %*% Ipq %*% t(Ytrue)
     A <- generateAdjacencyMatrix(P1)
@@ -59,34 +59,44 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =
     cs1 <- rep(0,length(signs))
     cs2 <- rep(0,length(signs))
     cs3 <- rep(0,length(signs))
+    cs4 <- rep(0,length(signs))
     get_matched_1 <- list()
     get_matched_2 <- list()
     gm <- list()
+    gm2 <- list()
     for (l in c(1:(length(signs)))) {
-      get_matched_1[[l]] <- iterative_optimal_transport(Xhat,Yhat
+      get_matched_1[[l]] <- iterative_optimal_transport(Xhat,Yhat,lambda=.001
                                                         #,lambda_init = .5
                                                         #,alpha = .5
                                                         #,lambda_final = .27
-                                                        , Q = bdiag(1,signs[[l]]),numReps = 100
+                                                        , Q = bdiag(1,signs[[l]]),numReps = 10
                                                         ,p=1,q=2)
       #cs1[l] <- get_matched_1[[l]]$obj.value
       cs1[l] <- kernel.stat(Xhat%*% get_matched_1[[l]]$Q,Yhat)
       
-      get_matched_2[[l]] <- iterative_optimal_transport(Xhat,Yhat
+      get_matched_2[[l]] <- iterative_optimal_transport(Xhat,Yhat,lambda=.001
                                                         # ,lambda_init = .5
                                                         #,alpha = .5
                                                         # ,lambda_final = .27
-                                                        , Q = bdiag(-1,signs[[l]]),numReps = 100
+                                                        , Q = bdiag(-1,signs[[l]]),numReps = 10
                                                         ,p=1,q=2)
       #cs2[l] <- get_matched_2[[l]]$obj.value
       cs2[l] <- kernel.stat(Xhat%*% get_matched_2[[l]]$Q,Yhat)
-      gm[[l]] <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.01
+      gm[[l]] <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.001
                                              # ,lambda_init = .5
                                              #,alpha = .5
                                              # ,lambda_final = .27
-                                             , Q = bdiag(-1,signs[[l]]),numReps = 100
+                                             , Q = bdiag(-1,signs[[l]]),numReps = 10
                                              ,p=1,q=2)
       cs3[l] <- kernel.stat(Xtilde%*% gm[[l]]$Q,Ytilde)
+      
+      gm2[[l]] <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.001
+                                              # ,lambda_init = .5
+                                              #,alpha = .5
+                                              # ,lambda_final = .27
+                                              , Q = bdiag(1,signs[[l]]),numReps = 10
+                                              ,p=1,q=2)
+      cs4[l] <- kernel.stat(Xtilde%*% gm2[[l]]$Q,Ytilde)
       
     }
     
@@ -98,46 +108,81 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =
     W1 <- procrustes(Xhat,Xtilde,Pi = diag(1,n),p=1,q=2)
     W2 <- procrustes(Yhat,Ytilde,Pi = diag(1,n),p=1,q=2)
     
-    Q1 <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.01
+    gms <- c(cs3,cs4)
+    
+    mm <- which.min(gms)
+    
+    if (mm > length(signs)) {
+      Q0 <- gm[[mm- length(signs)]]$Q
+    } else {
+      Q0 <- gm2[[mm]]$Q
+    }
+    
+    Q1 <- iterative_optimal_transport(Xtilde,Ytilde,lambda=.001
                                       # ,lambda_init = .5
                                       #,alpha = .5
                                       # ,lambda_final = .27
-                                      ,Q = gm[[which.min(cs3)]]$Q
-                                      ,numReps =  100
-                                      ,eps = .01,eps_OT = .01
+                                      ,Q = Q0
+                                      ,numReps =  10
+                                      ,eps = .001,eps_OT = .001
                                       ,p=1,q=2)
     
+    
+    
     #Q1 <- Q1$Q
+    #Q_indef <- get_initialization(Xtilde,Ytilde,p=1,q=2)
+    W_X <- procrustes(Xhat, Xtilde,Pi=diag(1,n))
+    W_Y <- procrustes(Yhat, Ytilde,Pi=diag(1,n))
+    #W_tilde <- procrustes(Xtilde,Ytilde,Pi=diag(1,n))
     
-    Q_init <- W1 %*% Q1$Q %*% t(W2)
     
+    Q_init1 <- W1 %*% Q1$Q %*% t(W2)
+    Q_init2 <- W_X %*% Q1$Q  %*% t(W_Y)
     
-    get_matched_3 <- iterative_optimal_transport(Xhat,Yhat,lambda=.01
+    get_matched_3 <- iterative_optimal_transport(Xhat,Yhat,lambda=.001
                                                  # ,lambda_init = .5
                                                  #,alpha = .5
                                                  # ,lambda_final = .27
-                                                 , Q = Q_init
-                                                 ,numReps =  100
-                                                 ,eps = .01,eps_OT = .01
+                                                 , Q = Q_init1
+                                                 ,numReps =  10
+                                                 ,eps = .001,eps_OT = .001
                                                  ,p=1,q=2)
+    get_matched_4 <- iterative_optimal_transport(Xhat,Yhat,lambda=.001
+                                                 # ,lambda_init = .5
+                                                 #,alpha = .5
+                                                 # ,lambda_final = .27
+                                                 , Q = Q_init2
+                                                 ,numReps =  10
+                                                 ,eps = .001,eps_OT = .001
+                                                 ,p=3)#,q=2)
+    
     
     minval3 <- kernel.stat(Xhat%*% get_matched_3$Q,Yhat)
+    minval4 <- kernel.stat(Xhat%*%Q_init1,Yhat)
+    minval5 <- kernel.stat(Xhat%*%get_matched_4$Q,Yhat)
     
-    if( minval1 < minval2 & minval1 < minval3) { 
+    
+    
+    
+    if( minval1 < minval2 & minval1 < minval3 & minval1 < minval4 & minval1 < minval5) { 
       final_Q <- get_matched_1[[which.min(cs1)]]$Q
-      
-      
-    } else if ( minval3 < minval2){
-      final_Q <- get_matched_3$Q#[[which.min(cs1)]]$Q
-    } else {
+    } else if( minval2 < minval3 & minval2 < minval4 & minval2 < minval5) {
       final_Q <- get_matched_2[[which.min(cs2)]]$Q
+    } else if (minval3 < minval4 & minval3 < minval5) {
+      final_Q <- get_matched_3$Q#[[which.min(cs1)]]$Q
+    } else if (minval4 < minval5) {
+      final_Q <- Q_init1
+    } else {
+      final_Q <- get_matched_4$Q
     }
+    
+    
+    
+    
     
     Xnew <- Xhat%*% final_Q
     
     results[[i]] <- nonpar.test(Xnew,Yhat,nsims = nMC)
-    
-    
   }
   
   alpha <- .05

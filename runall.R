@@ -42,9 +42,9 @@ print(paste0("packages loaded, running dcSBM simulation"))#,cl))
 
 
 results_dcsbm <- 
-  foreach(bs = c(1,2,3,4),.packages=c('nonparGraphTesting','irlba','igraph','Rcpp','Matrix')
-          ,.noexport = "generateAdjacencyMatrix") %:% 
   foreach(n=ns,.packages=c('nonparGraphTesting','irlba','igraph','Rcpp','Matrix')
+          ,.noexport = "generateAdjacencyMatrix") %:% 
+  foreach(bs = c(1,2,3,4),.packages=c('nonparGraphTesting','irlba','igraph','Rcpp','Matrix')
            ,.noexport = "generateAdjacencyMatrix" )  %dopar% {
              source("./balanced_vs_dcsbm/sbm_vs_dcsbm.R")
              #print(paste("eps = ",eps,", n = ",n))
