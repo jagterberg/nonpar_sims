@@ -41,8 +41,8 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =
     assignmentvector1 <- rmultinom(n,1,pis)
     assignmentvector2 <- rmultinom(m,1,pis)
     betas <- betaparams[1]*rbeta(n,betaparams[3],betaparams[4]) + betaparams[2]
-    Xtrue <-t(assignmentvector1) %*% nus_true1
-    Ytrue <-  betas* t(assignmentvector2) %*% nus_true2
+    Xtrue <-t(assignmentvector1) %*% nus_true
+    Ytrue <-  betas* t(assignmentvector2) %*% nus_true
     P1 <- Xtrue %*%Ipq %*% t(Xtrue)
     P2 <- Ytrue %*% Ipq %*% t(Ytrue)
     A <- generateAdjacencyMatrix(P1)
