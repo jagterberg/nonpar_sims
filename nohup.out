@@ -41,3 +41,4 @@ The following object is masked from ‘package:base’:
 
 Loading required package: Rcpp
 [1] "packages loaded, running dcSBM simulation"
+[1] "finished."
