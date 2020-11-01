@@ -41,4 +41,7 @@ The following object is masked from ‘package:base’:
 
 Loading required package: Rcpp
 [1] "packages loaded, running dcSBM simulation"
-[1] "finished."
+Error in { : 
+  task 1 failed - "unused arguments (minval2, minval3, minval4, minval5, minval6, minval7)"
+Calls: %dopar% -> <Anonymous>
+Execution halted
