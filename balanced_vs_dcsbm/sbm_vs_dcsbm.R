@@ -196,7 +196,7 @@ run_simulation_dcsbm <- function(n=300,ntimes=100,seed=2020,nMC=500,betaparams =
     minval4 <- kernel.stat(Xhat%*%Q_init1,Yhat)
     minval7 <- kernel.stat(Xhat%*%get_matched_4$Q,Yhat)
     
-    w.min <- which.min(minval1,minval2,minval3,minval4,minval5,minval6,minval7)
+    w.min <- which.min(c(minval1,minval2,minval3,minval4,minval5,minval6,minval7))
     
     
     if( w.min==1) { 
