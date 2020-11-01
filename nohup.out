@@ -41,6 +41,4 @@ The following object is masked from ‘package:base’:
 
 Loading required package: Rcpp
 [1] "packages loaded, running dcSBM simulation"
-Error in { : task 1 failed - "object 'nus_true1' not found"
-Calls: %dopar% -> <Anonymous>
-Execution halted
+[1] "finished."
