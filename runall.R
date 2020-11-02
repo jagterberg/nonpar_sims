@@ -50,7 +50,7 @@ results_dcsbm <-
              #print(paste("eps = ",eps,", n = ",n))
              run_simulation_dcsbm(ntimes = 100,n=n,nMC = 500,betaparams = bps[[bs]])
     }
-save(results_dcsbm,file = "dcsbm_results_10-26.Rdata") 
+save(results_dcsbm,file = "dcsbm_results_11-2.Rdata") 
 stopCluster(cl)
 print("finished.")
 
